@@ -1,0 +1,158 @@
+	{
+			"version": 1,
+			"author": "Talking Globe Team",
+			"editor": "wokwi",
+			"parts": [
+				{
+					"type": "wokwi-esp32-devkit-v1",
+					"id": "esp",
+					"top": 0,
+					"left": 0,
+					"attrs": {}
+				},
+				{
+					"type": "board-ssd1306",
+					"id": "oled",
+					"top": -170,
+					"left": 250,
+					"attrs": { "i2cAddress": "0x3c" }
+				},
+				{
+					"type": "wokwi-pushbutton",
+					"id": "btnIndia",
+					"top": 150,
+					"left": 250,
+					"attrs": { "color": "green", "label": "India" }
+				},
+				{
+					"type": "wokwi-pushbutton",
+					"id": "btnUSA",
+					"top": 150,
+					"left": 350,
+					"attrs": { "color": "blue", "label": "USA" }
+				},
+				{
+					"type": "wokwi-pushbutton",
+					"id": "btnBrazil",
+					"top": 150,
+					"left": 450,
+					"attrs": { "color": "red", "label": "Brazil" }
+				},
+				{
+					"type": "wokwi-pushbutton",
+					"id": "btnAfrica",
+					"top": 250,
+					"left": 250,
+					"attrs": { "color": "yellow", "label": "Africa" }
+				},
+				{
+					"type": "wokwi-pushbutton",
+					"id": "btnAustralia",
+					"top": 250,
+					"left": 350,
+					"attrs": { "color": "white", "label": "Australia" }
+				},
+				{
+					"type": "wokwi-pushbutton",
+					"id": "btnFrance",
+					"top": 250,
+					"left": 450,
+					"attrs": { "color": "purple", "label": "France" }
+				},
+				{
+					"type": "wokwi-pushbutton",
+					"id": "modeButton",
+					"top": 350,
+					"left": 350,
+					"attrs": { "color": "orange", "label": "MODE" }
+				},
+				{
+					"type": "wokwi-led",
+					"id": "ledIndia",
+					"top": 150,
+					"left": 600,
+					"attrs": { "color": "green" }
+				},
+				{
+					"type": "wokwi-led",
+					"id": "ledUSA",
+					"top": 200,
+					"left": 600,
+					"attrs": { "color": "blue" }
+				},
+				{
+					"type": "wokwi-led",
+					"id": "ledBrazil",
+					"top": 250,
+					"left": 600,
+					"attrs": { "color": "red" }
+				},
+				{
+					"type": "wokwi-led",
+					"id": "ledAfrica",
+					"top": 300,
+					"left": 600,
+					"attrs": { "color": "yellow" }
+				},
+				{
+					"type": "wokwi-led",
+					"id": "ledAustralia",
+					"top": 350,
+					"left": 600,
+					"attrs": { "color": "white" }
+				},
+				{
+					"type": "wokwi-led",
+					"id": "ledFrance",
+					"top": 400,
+					"left": 600,
+					"attrs": { "color": "purple" }
+				},
+				{
+					"type": "wokwi-buzzer",
+					"id": "buzzer",
+					"top": 450,
+					"left": 350,
+					"attrs": {}
+				}
+			],
+			"connections": [
+				[ "esp:D21", "oled:SDA", "green", [] ],
+				[ "esp:D22", "oled:SCL", "green", [] ],
+				[ "esp:3V3", "oled:VCC", "red", [] ],
+				[ "esp:GND.1", "oled:GND", "black", [] ],
+				[ "btnIndia:1.l", "esp:D32", "green", [] ],
+				[ "btnIndia:2.r", "esp:GND.2", "black", [] ],
+				[ "btnUSA:1.l", "esp:D33", "blue", [] ],
+				[ "btnUSA:2.r", "esp:GND.2", "black", [] ],
+				[ "btnBrazil:1.l", "esp:D25", "red", [] ],
+				[ "btnBrazil:2.r", "esp:GND.2", "black", [] ],
+				[ "btnAfrica:1.l", "esp:D26", "yellow", [] ],
+				[ "btnAfrica:2.r", "esp:GND.2", "black", [] ],
+				[ "btnAustralia:1.l", "esp:D14", "white", [] ],
+				[ "btnAustralia:2.r", "esp:GND.2", "black", [] ],
+				[ "btnFrance:1.l", "esp:D13", "purple", [] ],
+				[ "btnFrance:2.r", "esp:GND.2", "black", [] ],
+				[ "modeButton:1.l", "esp:D27", "orange", [] ],
+				[ "modeButton:2.r", "esp:GND.2", "black", [] ],
+				[ "ledIndia:A", "esp:D4", "green", [] ],
+				[ "ledIndia:C", "esp:GND.3", "black", [] ],
+				[ "ledUSA:A", "esp:D5", "blue", [] ],
+				[ "ledUSA:C", "esp:GND.3", "black", [] ],
+				[ "ledBrazil:A", "esp:D18", "red", [] ],
+				[ "ledBrazil:C", "esp:GND.3", "black", [] ],
+				[ "ledAfrica:A", "esp:D19", "yellow", [] ],
+				[ "ledAfrica:C", "esp:GND.3", "black", [] ],
+				[ "ledAustralia:A", "esp:D23", "white", [] ],
+				[ "ledAustralia:C", "esp:GND.3", "black", [] ],
+				[ "ledFrance:A", "esp:D15", "purple", [] ],
+				[ "ledFrance:C", "esp:GND.3", "black", [] ],
+				[ "buzzer:1", "esp:D2", "orange", [] ],
+				[ "buzzer:2", "esp:GND.4", "black", [] ],
+				[ "esp:TX0", "$serialMonitor:RX", "", [] ],
+				[ "esp:RX0", "$serialMonitor:TX", "", [] ]
+			],
+			"serialMonitor": {
+				"display": "terminal"
+			}
+			}
