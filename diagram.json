@@ -40,10 +40,10 @@
 				},
 				{
 					"type": "wokwi-pushbutton",
-					"id": "btnAfrica",
+					"id": "btnEgypt",
 					"top": 250,
 					"left": 250,
-					"attrs": { "color": "yellow", "label": "Africa" }
+					"attrs": { "color": "yellow", "label": "Egypt" }
 				},
 				{
 					"type": "wokwi-pushbutton",
@@ -58,6 +58,83 @@
 					"top": 250,
 					"left": 450,
 					"attrs": { "color": "purple", "label": "France" }
+				},
+				{
+					"type": "wokwi-pushbutton",
+					"id": "btnJapan",
+					"top": 350,
+					"left": 150,
+					"attrs": { "color": "red", "label": "Japan" }
+				},
+				{
+					"type": "wokwi-pushbutton",
+					"id": "btnCanada",
+					"top": 350,
+					"left": 250,
+					"attrs": { "color": "white", "label": "Canada" }
+				},
+				{
+					"type": "wokwi-pushbutton",
+					"id": "btnMexico",
+					"top": 350,
+					"left": 450,
+					"attrs": { "color": "green", "label": "Mexico" }
+				},
+				{
+					"type": "wokwi-pushbutton",
+					"id": "btnItaly",
+					"top": 350,
+					"left": 550,
+					"attrs": { "color": "green", "label": "Italy" }
+				},
+				{
+					"type": "wokwi-pushbutton",
+					"id": "btnKenya",
+					"top": 450,
+					"left": 150,
+					"attrs": { "color": "black", "label": "Kenya" }
+				},
+				{
+					"type": "wokwi-pushbutton",
+					"id": "btnGreece",
+					"top": 450,
+					"left": 250,
+					"attrs": { "color": "blue", "label": "Greece" }
+				},
+				{
+					"type": "wokwi-resistor",
+					"id": "pullup16",
+					"top": 480,
+					"left": 250,
+					"attrs": { "resistance": "10k" }
+				},
+				{
+					"type": "wokwi-resistor",
+					"id": "pullup17",
+					"top": 480,
+					"left": 350,
+					"attrs": { "resistance": "10k" }
+				},
+				{
+					"type": "wokwi-resistor",
+					"id": "pullup34",
+					"top": 480,
+					"left": 450,
+					"attrs": { "resistance": "10k" }
+				},
+				{
+					"type": "wokwi-resistor",
+					"id": "pullup35",
+					"top": 480,
+					"left": 550,
+					"attrs": { "resistance": "10k" }
+				},
+				{
+					"type": "wokwi-resistor",
+					"id": "pullup39",
+					"top": 480,
+					"left": 650,
+					"attrs": { "resistance": "10k" }
 				},
 				{
 					"type": "wokwi-pushbutton",
@@ -89,7 +166,7 @@
 				},
 				{
 					"type": "wokwi-led",
-					"id": "ledAfrica",
+					"id": "ledEgypt",
 					"top": 300,
 					"left": 600,
 					"attrs": { "color": "yellow" }
@@ -127,12 +204,34 @@
 				[ "btnUSA:2.r", "esp:GND.2", "black", [] ],
 				[ "btnBrazil:1.l", "esp:D25", "red", [] ],
 				[ "btnBrazil:2.r", "esp:GND.2", "black", [] ],
-				[ "btnAfrica:1.l", "esp:D26", "yellow", [] ],
-				[ "btnAfrica:2.r", "esp:GND.2", "black", [] ],
+				[ "btnEgypt:1.l", "esp:D26", "yellow", [] ],
+				[ "btnEgypt:2.r", "esp:GND.2", "black", [] ],
 				[ "btnAustralia:1.l", "esp:D14", "white", [] ],
 				[ "btnAustralia:2.r", "esp:GND.2", "black", [] ],
 				[ "btnFrance:1.l", "esp:D13", "purple", [] ],
 				[ "btnFrance:2.r", "esp:GND.2", "black", [] ],
+				[ "btnJapan:1.l", "esp:D16", "red", [] ],
+				[ "btnJapan:2.r", "esp:GND.2", "black", [] ],
+				[ "btnCanada:1.l", "esp:D17", "white", [] ],
+				[ "btnCanada:2.r", "esp:GND.2", "black", [] ],
+				[ "btnMexico:1.l", "esp:D39", "green", [] ],
+				[ "btnMexico:2.r", "esp:GND.2", "black", [] ],
+				[ "btnItaly:1.l", "esp:D12", "green", [] ],
+				[ "btnItaly:2.r", "esp:GND.2", "black", [] ],
+				[ "btnKenya:1.l", "esp:D34", "black", [] ],
+				[ "btnKenya:2.r", "esp:GND.2", "black", [] ],
+				[ "btnGreece:1.l", "esp:D35", "blue", [] ],
+				[ "btnGreece:2.r", "esp:GND.2", "black", [] ],
+				[ "pullup34:1", "esp:3V3", "red", [] ],
+				[ "pullup34:2", "esp:D34", "red", [] ],
+				[ "pullup16:1", "esp:3V3", "red", [] ],
+				[ "pullup16:2", "esp:D16", "red", [] ],
+				[ "pullup17:1", "esp:3V3", "red", [] ],
+				[ "pullup17:2", "esp:D17", "red", [] ],
+				[ "pullup35:1", "esp:3V3", "red", [] ],
+				[ "pullup35:2", "esp:D35", "red", [] ],
+				[ "pullup39:1", "esp:3V3", "red", [] ],
+				[ "pullup39:2", "esp:D39", "red", [] ],
 				[ "modeButton:1.l", "esp:D27", "orange", [] ],
 				[ "modeButton:2.r", "esp:GND.2", "black", [] ],
 				[ "ledIndia:A", "esp:D4", "green", [] ],
@@ -141,8 +240,8 @@
 				[ "ledUSA:C", "esp:GND.3", "black", [] ],
 				[ "ledBrazil:A", "esp:D18", "red", [] ],
 				[ "ledBrazil:C", "esp:GND.3", "black", [] ],
-				[ "ledAfrica:A", "esp:D19", "yellow", [] ],
-				[ "ledAfrica:C", "esp:GND.3", "black", [] ],
+				[ "ledEgypt:A", "esp:D19", "yellow", [] ],
+				[ "ledEgypt:C", "esp:GND.3", "black", [] ],
 				[ "ledAustralia:A", "esp:D23", "white", [] ],
 				[ "ledAustralia:C", "esp:GND.3", "black", [] ],
 				[ "ledFrance:A", "esp:D15", "purple", [] ],
