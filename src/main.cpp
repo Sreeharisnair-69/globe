@@ -3,27 +3,12 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
-// ---------- Function Declarations ----------
-
-void showWelcomeScreen();
-void checkCountryButtons();
-void checkModeButton();
-void handleCountry(int country);
-void showFacts(int country);
-void showStory(int country);
-void handleQuiz(int country);
-void turnOffAllLEDs();
-void playSimulatedAudio(int country);
-void changeMode();
-void showModeScreen(const char *modeName);
-
 // =====================================================
-// OLED SETTINGS
+// OLED DISPLAY SETTINGS
 // =====================================================
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
-
 #define OLED_RESET -1
 #define OLED_ADDRESS 0x3C
 
@@ -31,7 +16,8 @@ Adafruit_SSD1306 display(
     SCREEN_WIDTH,
     SCREEN_HEIGHT,
     &Wire,
-    OLED_RESET);
+    OLED_RESET
+);
 
 // =====================================================
 // PIN DEFINITIONS
@@ -41,92 +27,184 @@ Adafruit_SSD1306 display(
 #define SDA_PIN 21
 #define SCL_PIN 22
 
-// Mode button
+// Mode Button
 #define MODE_BUTTON 27
 
-// Country buttons
-const int countryButtons[12] = {
-    32,
-    33,
-    25,
-    26,
-    14,
-    13,
-    16,
-    17,
-    39,
-    12,
-    34,
-    35};
+// Country Buttons (12 countries)
+#define NUM_COUNTRIES 12
 
-// Country LEDs
-const int countryLEDs[6] = {
-    4,
-    5,
-    18,
-    19,
-    23,
-    15};
+const int countryButtons[NUM_COUNTRIES] = {
+    32, // 0: India
+    33, // 1: USA
+    25, // 2: Brazil
+    26, // 3: Egypt
+    14, // 4: Australia
+    13, // 5: France
+    16, // 6: Japan  (RX2)
+    17, // 7: Canada (TX2)
+    39, // 8: Mexico (VN)
+    12, // 9: Italy
+    34, // 10: Kenya
+    35  // 11: Greece
+};
 
-// Buzzer
-#define BUZZER 2
+// Country LEDs (6 wired in diagram)
+#define NUM_LEDS 6
+const int countryLEDs[NUM_LEDS] = {
+    4,  // India
+    5,  // USA
+    18, // Brazil
+    19, // Egypt
+    23, // Australia
+    15  // France
+};
 
 // =====================================================
-// COUNTRY INFORMATION
+// COUNTRY DATA STRUCTURE
 // =====================================================
 
 struct CountryInfo
 {
-  const char *name;
-  const char *fact;
-  const char *story;
-  const char *question;
-  const char *answer;
+    const char *name;
+    const char *continent;
+    const char *fact;
+    const char *story;
+    const char *quizQuestion;
 };
 
-const CountryInfo countryInfo[12] = {
-    {"India", "The Taj Mahal is in Agra.", "Diwali fills homes with lamps.", "What is India's capital?", "New Delhi"},
-    {"USA", "The USA has 50 states.", "Apollo 11 reached the Moon in 1969.", "What is the USA's capital?", "Washington, D.C."},
-    {"Brazil", "Brazil is home to the Amazon.", "Carnival brings music to Rio.", "Which continent is Brazil in?", "South America"},
-    {"Egypt", "The pyramids stand at Giza.", "Ancient scribes wrote on papyrus.", "What river runs through Egypt?", "The Nile"},
-    {"Australia", "Australia has the Great Barrier Reef.", "A rescued joey grows in a pouch.", "What is Australia's capital?", "Canberra"},
-    {"France", "The Eiffel Tower is in Paris.", "Artists once gathered in Montmartre.", "What is France's capital?", "Paris"},
-    {"Japan", "Japan is made of thousands of islands.", "Cherry blossoms mark the spring.", "What is Japan's capital?", "Tokyo"},
-    {"Canada", "Canada has the world's longest coastline.", "Rangers guide visitors through the Rockies.", "What is Canada's capital?", "Ottawa"},
-    {"Mexico", "Mexico is famous for ancient Maya cities.", "Day of the Dead honors loved ones.", "What is Mexico's capital?", "Mexico City"},
-    {"Italy", "Rome is home to the Colosseum.", "Venice is built around canals.", "What is Italy's capital?", "Rome"},
-    {"Kenya", "Kenya is known for the Maasai Mara.", "Wildebeest cross the Mara each year.", "What is Kenya's capital?", "Nairobi"},
-    {"Greece", "The Acropolis overlooks Athens.", "The first Olympic Games began in Greece.", "What is Greece's capital?", "Athens"}};
+const CountryInfo countryInfo[NUM_COUNTRIES] = {
+    {
+        "India",
+        "Asia",
+        "Home to the iconic Taj Mahal, built of white marble in Agra.",
+        "Diwali, the festival of lights, fills homes with oil lamps and sweets.",
+        "Which country is home to the Taj Mahal in Agra?"
+    },
+    {
+        "USA",
+        "North America",
+        "A diverse nation spanning 50 states from the Atlantic to Pacific.",
+        "Apollo 11 astronauts lifted off here and reached the Moon in 1969.",
+        "Which nation is made of 50 states and sent Apollo to the Moon?"
+    },
+    {
+        "Brazil",
+        "South America",
+        "Home to the Amazon, the world's largest tropical rainforest.",
+        "Carnival brings vibrant parades, costumes, and samba to Rio.",
+        "Which country is home to Rio and the vast Amazon rainforest?"
+    },
+    {
+        "Egypt",
+        "Africa",
+        "The Great Pyramids and Sphinx stand tall along the River Nile.",
+        "Ancient scribes wrote history in hieroglyphs on papyrus scrolls.",
+        "Where are the Great Pyramids and the River Nile located?"
+    },
+    {
+        "Australia",
+        "Oceania",
+        "Famous for the Great Barrier Reef and unique native wildlife.",
+        "A rescued baby kangaroo (joey) grows safely in its mother's pouch.",
+        "Which country is home to kangaroos & the Great Barrier Reef?"
+    },
+    {
+        "France",
+        "Europe",
+        "The Eiffel Tower in Paris stands 330 meters above the River Seine.",
+        "World-famous artists and writers met in the cafes of Montmartre.",
+        "Which country is home to Paris and the Eiffel Tower?"
+    },
+    {
+        "Japan",
+        "Asia",
+        "An island nation known for bullet trains, anime, and Mount Fuji.",
+        "Cherry blossoms (Sakura) bloom in spring, celebrated with picnics.",
+        "Land of Mount Fuji, bullet trains, and cherry blossoms?"
+    },
+    {
+        "Canada",
+        "North America",
+        "The second largest country by area, with the world's longest coast.",
+        "Park rangers watch over grizzly bears in the snowy Rocky Mountains.",
+        "Which country has the world's longest coastline & Rockies?"
+    },
+    {
+        "Mexico",
+        "North America",
+        "Rich in history, from ancient Mayan pyramids to vibrant cuisine.",
+        "Dia de los Muertos honors loved ancestors with marigold flowers.",
+        "Famous for ancient Mayan pyramids and Dia de los Muertos?"
+    },
+    {
+        "Italy",
+        "Europe",
+        "Historic heart of the Roman Empire, delicious pizza, and gelato.",
+        "Gondolas carry passengers through the winding canals of Venice.",
+        "Which country is home to Rome, the Colosseum, and Venice?"
+    },
+    {
+        "Kenya",
+        "Africa",
+        "World-renowned for Mount Kenya and the Maasai Mara national reserve.",
+        "Over a million wildebeest migrate across the Mara River each year.",
+        "Which African nation is famed for the Maasai Mara safari?"
+    },
+    {
+        "Greece",
+        "Europe",
+        "The cradle of Western democracy, philosophy, and Olympic Games.",
+        "The ancient Olympic Games began here in Olympia over 2,700 yrs ago.",
+        "Where were the ancient Olympic Games and democracy born?"
+    }
+};
 
 // =====================================================
-// MODES
+// OPERATING MODES & STATE
 // =====================================================
 
 enum Mode
 {
-  FACTS,
-  STORY,
-  QUIZ
+    FACTS,
+    STORY,
+    QUIZ
 };
 
 Mode currentMode = FACTS;
 
-// =====================================================
-// QUIZ VARIABLES
-// =====================================================
-
+// Quiz state & randomization
+int quizOrder[NUM_COUNTRIES];
+int quizIndex = 0;
 int quizScore = 0;
-int quizQuestion = 0;
+bool quizAnswerPending = false;
+
+// Button debounce tracking
+bool countryButtonWasPressed[NUM_COUNTRIES] = {};
+unsigned long lastCountryPressTime[NUM_COUNTRIES] = {};
+
+bool modeButtonWasPressed = false;
+unsigned long lastModePressTime = 0;
+const unsigned long DEBOUNCE_DELAY = 200; // ms
 
 // =====================================================
-// DEBOUNCE VARIABLES
+// FUNCTION PROTOTYPES
 // =====================================================
 
-unsigned long lastModePress = 0;
-unsigned long lastCountryPress = 0;
-bool countryButtonWasPressed[12] = {};
+void showWelcomeScreen();
+void showModeIntro(Mode mode);
+void displayFacts(int country);
+void displayStory(int country);
 
-const unsigned long debounceDelay = 250;
+void shuffleQuiz();
+void displayQuizQuestion();
+void handleQuizAnswer(int selectedCountry);
+void finishQuiz();
+
+void checkCountryButtons();
+void checkModeButton();
+void changeMode();
+void turnOffAllLEDs();
+void highlightLED(int country);
 
 // =====================================================
 // SETUP
@@ -134,90 +212,64 @@ const unsigned long debounceDelay = 250;
 
 void setup()
 {
-  Serial.begin(115200);
+    Serial.begin(115200);
+    delay(100);
 
-  Serial.println();
-  Serial.println("==============================");
-  Serial.println("      TALKING GLOBE");
-  Serial.println("      WOKWI VERSION 1");
-  Serial.println("==============================");
-  Serial.println();
+    Serial.println();
+    Serial.println("========================================");
+    Serial.println("         TALKING GLOBE ESP32            ");
+    Serial.println("========================================");
 
-  // -------------------------------------------------
-  // Start I2C
-  // -------------------------------------------------
+    // Seed the hardware random number generator
+    randomSeed(esp_random());
 
-  Wire.begin(SDA_PIN, SCL_PIN);
-
-  // -------------------------------------------------
-  // Start OLED
-  // -------------------------------------------------
-
-  if (!display.begin(
-          SSD1306_SWITCHCAPVCC,
-          OLED_ADDRESS))
-  {
-    Serial.println("ERROR: OLED not found!");
-
-    while (true)
+    // Initialize I2C and OLED
+    Wire.begin(SDA_PIN, SCL_PIN);
+    if (!display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDRESS))
     {
-      delay(1000);
+        Serial.println("ERROR: SSD1306 OLED not detected!");
+        while (true)
+        {
+            delay(1000);
+        }
     }
-  }
 
-  // -------------------------------------------------
-  // Country buttons
-  // -------------------------------------------------
+    display.setTextColor(SSD1306_WHITE);
+    display.setTextWrap(true);
 
-  for (int i = 0; i < 12; i++)
-  {
-    pinMode(
-        countryButtons[i],
-        i >= 6 && i != 9 ? INPUT : INPUT_PULLUP);
+    // Initialize LEDs
+    for (int i = 0; i < NUM_LEDS; i++)
+    {
+        pinMode(countryLEDs[i], OUTPUT);
+        digitalWrite(countryLEDs[i], LOW);
+    }
 
-    countryButtonWasPressed[i] =
-        digitalRead(countryButtons[i]) == LOW;
-  }
+    // Initialize Mode Button
+    pinMode(MODE_BUTTON, INPUT_PULLUP);
+    modeButtonWasPressed = (digitalRead(MODE_BUTTON) == LOW);
 
-  // -------------------------------------------------
-  // Mode button
-  // -------------------------------------------------
+    // Initialize Country Buttons
+    // Pins 34, 35, 39 are input-only without internal pullups; use INPUT
+    for (int i = 0; i < NUM_COUNTRIES; i++)
+    {
+        const int pin = countryButtons[i];
+        const bool inputOnly = (pin == 34 || pin == 35 || pin == 39);
 
-  pinMode(
-      MODE_BUTTON,
-      INPUT_PULLUP);
+        pinMode(pin, inputOnly ? INPUT : INPUT_PULLUP);
+        countryButtonWasPressed[i] = (digitalRead(pin) == LOW);
+        lastCountryPressTime[i] = 0;
+    }
 
-  // -------------------------------------------------
-  // Country LEDs
-  // -------------------------------------------------
+    // Prepare initial random quiz order
+    shuffleQuiz();
 
-  for (int i = 0; i < 6; i++)
-  {
-    pinMode(
-        countryLEDs[i],
-        OUTPUT);
+    // Show Welcome Splash
+    showWelcomeScreen();
+    delay(1800);
 
-    digitalWrite(
-        countryLEDs[i],
-        LOW);
-  }
-
-  // -------------------------------------------------
-  // Buzzer
-  // -------------------------------------------------
-
-  pinMode(
-      BUZZER,
-      OUTPUT);
-
-  // -------------------------------------------------
-  // Initial screen
-  // -------------------------------------------------
-
-  showWelcomeScreen();
-
-  Serial.println("Talking Globe ready!");
-  Serial.println("Current mode: FACTS");
+    // Transition to default FACTS mode
+    showModeIntro(FACTS);
+    Serial.println("Talking Globe ready in FACTS mode.");
 }
 
 // =====================================================
@@ -226,382 +278,411 @@ void setup()
 
 void loop()
 {
-  checkCountryButtons();
-
-  checkModeButton();
-
-  delay(10);
+    checkModeButton();
+    checkCountryButtons();
+    delay(10);
 }
 
 // =====================================================
-// WELCOME SCREEN
+// SCREEN RENDERING
 // =====================================================
 
 void showWelcomeScreen()
 {
-  display.clearDisplay();
+    display.clearDisplay();
+    display.drawRoundRect(0, 0, 128, 64, 4, SSD1306_WHITE);
 
-  display.setTextColor(SSD1306_WHITE);
+    display.setTextSize(2);
+    display.setCursor(20, 8);
+    display.print("TALKING");
 
-  display.setTextSize(2);
+    display.setCursor(32, 28);
+    display.print("GLOBE");
 
-  display.setCursor(12, 5);
-  display.println("TALKING");
+    display.setTextSize(1);
+    display.setCursor(18, 48);
+    display.print("Press Any Button");
+    display.display();
+}
 
-  display.setCursor(22, 30);
-  display.println("GLOBE");
+void showModeIntro(Mode mode)
+{
+    turnOffAllLEDs();
+    display.clearDisplay();
+    display.drawFastHLine(0, 14, 128, SSD1306_WHITE);
 
-  display.setTextSize(1);
+    display.setTextSize(1);
+    display.setCursor(2, 2);
 
-  display.setCursor(25, 52);
-  display.println("WOKWI V1");
+    if (mode == FACTS)
+    {
+        display.print("MODE: COUNTRY FACTS");
+        display.setCursor(2, 20);
+        display.println("Press any country");
+        display.println("button to learn cool");
+        display.println("geography facts!");
+    }
+    else if (mode == STORY)
+    {
+        display.print("MODE: CULTURE & TALES");
+        display.setCursor(2, 20);
+        display.println("Press any country");
+        display.println("button to discover");
+        display.println("stories and folklore!");
+    }
+    else if (mode == QUIZ)
+    {
+        display.print("MODE: GLOBE QUIZ");
+        display.setCursor(2, 20);
+        display.println("Get ready!");
+        display.println("Answer questions by");
+        display.println("pressing country keys.");
+    }
 
-  display.display();
+    display.display();
+}
+
+void displayFacts(int country)
+{
+    highlightLED(country);
+
+    display.clearDisplay();
+    display.drawFastHLine(0, 12, 128, SSD1306_WHITE);
+
+    display.setTextSize(1);
+    display.setCursor(2, 2);
+    display.print("FACTS: ");
+    display.print(countryInfo[country].name);
+
+    display.setCursor(2, 16);
+    display.println(countryInfo[country].fact);
+
+    display.setCursor(2, 54);
+    display.print("Region: ");
+    display.print(countryInfo[country].continent);
+
+    display.display();
+
+    Serial.println();
+    Serial.println("--- [FACTS] ---");
+    Serial.print("Country:   "); Serial.println(countryInfo[country].name);
+    Serial.print("Continent: "); Serial.println(countryInfo[country].continent);
+    Serial.print("Fact:      "); Serial.println(countryInfo[country].fact);
+}
+
+void displayStory(int country)
+{
+    highlightLED(country);
+
+    display.clearDisplay();
+    display.drawFastHLine(0, 12, 128, SSD1306_WHITE);
+
+    display.setTextSize(1);
+    display.setCursor(2, 2);
+    display.print("STORY: ");
+    display.print(countryInfo[country].name);
+
+    display.setCursor(2, 16);
+    display.println(countryInfo[country].story);
+
+    display.setCursor(2, 54);
+    display.print("Region: ");
+    display.print(countryInfo[country].continent);
+
+    display.display();
+
+    Serial.println();
+    Serial.println("--- [STORY] ---");
+    Serial.print("Country:   "); Serial.println(countryInfo[country].name);
+    Serial.print("Story:     "); Serial.println(countryInfo[country].story);
 }
 
 // =====================================================
-// CHECK COUNTRY BUTTONS
+// RANDOMIZED QUIZ SYSTEM
+// =====================================================
+
+void shuffleQuiz()
+{
+    // Populate with 0..NUM_COUNTRIES-1
+    for (int i = 0; i < NUM_COUNTRIES; i++)
+    {
+        quizOrder[i] = i;
+    }
+
+    // Fisher-Yates shuffle using hardware random
+    for (int i = NUM_COUNTRIES - 1; i > 0; i--)
+    {
+        int j = esp_random() % (i + 1);
+        int temp = quizOrder[i];
+        quizOrder[i] = quizOrder[j];
+        quizOrder[j] = temp;
+    }
+
+    Serial.print("New randomized quiz order: ");
+    for (int i = 0; i < NUM_COUNTRIES; i++)
+    {
+        Serial.print(countryInfo[quizOrder[i]].name);
+        if (i < NUM_COUNTRIES - 1) Serial.print(", ");
+    }
+    Serial.println();
+}
+
+void displayQuizQuestion()
+{
+    turnOffAllLEDs();
+    quizAnswerPending = true;
+
+    const int targetCountry = quizOrder[quizIndex];
+
+    display.clearDisplay();
+    display.drawFastHLine(0, 12, 128, SSD1306_WHITE);
+
+    display.setTextSize(1);
+    display.setCursor(2, 2);
+    display.print("Q");
+    display.print(quizIndex + 1);
+    display.print("/12  Score:");
+    display.print(quizScore);
+
+    display.setCursor(2, 16);
+    display.println(countryInfo[targetCountry].quizQuestion);
+
+    display.display();
+
+    Serial.println();
+    Serial.print("--- [QUIZ Q"); Serial.print(quizIndex + 1); Serial.println("/12] ---");
+    Serial.println(countryInfo[targetCountry].quizQuestion);
+    Serial.println("Press the matching country button!");
+}
+
+void handleQuizAnswer(int selectedCountry)
+{
+    quizAnswerPending = false;
+    const int targetCountry = quizOrder[quizIndex];
+    const bool isCorrect = (selectedCountry == targetCountry);
+
+    display.clearDisplay();
+    display.drawFastHLine(0, 12, 128, SSD1306_WHITE);
+
+    display.setTextSize(1);
+    display.setCursor(2, 2);
+    display.print("Q");
+    display.print(quizIndex + 1);
+    display.print("/12 Result");
+
+    if (isCorrect)
+    {
+        quizScore++;
+        highlightLED(selectedCountry);
+
+        display.setTextSize(2);
+        display.setCursor(18, 18);
+        display.print("CORRECT!");
+
+        display.setTextSize(1);
+        display.setCursor(16, 38);
+        display.print(countryInfo[selectedCountry].name);
+        display.print(" (+1 pt)");
+
+        display.setCursor(16, 52);
+        display.print("Score: ");
+        display.print(quizScore);
+        display.print("/12");
+
+        display.display();
+
+        Serial.println("RESULT: CORRECT! Well done.");
+    }
+    else
+    {
+        display.setTextSize(2);
+        display.setCursor(8, 18);
+        display.print("INCORRECT!");
+
+        display.setTextSize(1);
+        display.setCursor(2, 38);
+        display.print("Ans: ");
+        display.print(countryInfo[targetCountry].name);
+
+        display.setCursor(2, 52);
+        display.print("Picked: ");
+        display.print(countryInfo[selectedCountry].name);
+
+        display.display();
+
+        Serial.print("RESULT: INCORRECT. You pressed: ");
+        Serial.print(countryInfo[selectedCountry].name);
+        Serial.print(", correct answer was: ");
+        Serial.println(countryInfo[targetCountry].name);
+    }
+
+    delay(1600);
+
+    quizIndex++;
+    if (quizIndex >= NUM_COUNTRIES)
+    {
+        finishQuiz();
+    }
+    else
+    {
+        displayQuizQuestion();
+    }
+}
+
+void finishQuiz()
+{
+    turnOffAllLEDs();
+
+    display.clearDisplay();
+    display.drawRoundRect(0, 0, 128, 64, 4, SSD1306_WHITE);
+
+    display.setTextSize(1);
+    display.setCursor(20, 8);
+    display.print("QUIZ COMPLETE!");
+
+    display.setTextSize(2);
+    display.setCursor(30, 24);
+    display.print(quizScore);
+    display.print("/12");
+
+    display.setTextSize(1);
+    display.setCursor(14, 46);
+    if (quizScore >= 10)
+    {
+        display.print("Master Geographer!");
+    }
+    else if (quizScore >= 6)
+    {
+        display.print("Great Explorer!");
+    }
+    else
+    {
+        display.print("Keep Exploring!");
+    }
+    display.display();
+
+    Serial.println();
+    Serial.println("========================================");
+    Serial.print("QUIZ OVER! Final Score: ");
+    Serial.print(quizScore);
+    Serial.println("/12");
+    Serial.println("========================================");
+
+    delay(2800);
+
+    // Reshuffle for next game
+    shuffleQuiz();
+    quizIndex = 0;
+    quizScore = 0;
+    displayQuizQuestion();
+}
+
+// =====================================================
+// HARDWARE CONTROLS (BUTTONS & LEDS)
 // =====================================================
 
 void checkCountryButtons()
 {
-  for (int i = 0; i < 12; i++)
-  {
-    bool buttonPressed =
-        digitalRead(countryButtons[i]) == LOW;
+    unsigned long now = millis();
 
-    if (
-        buttonPressed && !countryButtonWasPressed[i])
+    for (int i = 0; i < NUM_COUNTRIES; i++)
     {
-      unsigned long now = millis();
+        bool isPressed = (digitalRead(countryButtons[i]) == LOW);
 
-      if (
-          now - lastCountryPress >
-          debounceDelay)
-      {
-        lastCountryPress = now;
+        if (isPressed && !countryButtonWasPressed[i])
+        {
+            if (now - lastCountryPressTime[i] > DEBOUNCE_DELAY)
+            {
+                lastCountryPressTime[i] = now;
 
-        handleCountry(i);
-      }
+                if (currentMode == FACTS)
+                {
+                    displayFacts(i);
+                }
+                else if (currentMode == STORY)
+                {
+                    displayStory(i);
+                }
+                else if (currentMode == QUIZ)
+                {
+                    if (quizAnswerPending)
+                    {
+                        handleQuizAnswer(i);
+                    }
+                }
+            }
+        }
+        countryButtonWasPressed[i] = isPressed;
     }
-
-    countryButtonWasPressed[i] = buttonPressed;
-  }
 }
-
-// =====================================================
-// HANDLE COUNTRY
-// =====================================================
-
-void handleCountry(int country)
-{
-  Serial.println();
-  Serial.println("------------------------------");
-
-  Serial.print("Country selected: ");
-  Serial.println(countryInfo[country].name);
-
-  Serial.print("Current mode: ");
-
-  if (currentMode == FACTS)
-  {
-    Serial.println("FACTS");
-
-    showFacts(country);
-  }
-  else if (currentMode == STORY)
-  {
-    Serial.println("STORY");
-
-    showStory(country);
-  }
-  else if (currentMode == QUIZ)
-  {
-    Serial.println("QUIZ");
-
-    handleQuiz(country);
-  }
-
-  Serial.println("------------------------------");
-}
-
-// =====================================================
-// SHOW FACTS
-// =====================================================
-
-void showFacts(int country)
-{
-  turnOffAllLEDs();
-
-  if (country < 6)
-  {
-    digitalWrite(
-        countryLEDs[country],
-        HIGH);
-  }
-
-  display.clearDisplay();
-
-  display.setTextColor(SSD1306_WHITE);
-
-  display.setTextSize(1);
-
-  display.setCursor(0, 0);
-
-  display.println("COUNTRY DETECTED");
-
-  display.setCursor(0, 15);
-
-  display.println(countryInfo[country].name);
-
-  display.setCursor(0, 30);
-
-  display.println(countryInfo[country].fact);
-
-  display.display();
-
-  // Simulated audio
-  playSimulatedAudio(country);
-}
-
-// =====================================================
-// SHOW STORY
-// =====================================================
-
-void showStory(int country)
-{
-  turnOffAllLEDs();
-
-  if (country < 6)
-  {
-    digitalWrite(
-        countryLEDs[country],
-        HIGH);
-  }
-
-  display.clearDisplay();
-
-  display.setTextColor(SSD1306_WHITE);
-
-  display.setTextSize(1);
-
-  display.setCursor(0, 0);
-
-  display.println("STORY MODE");
-
-  display.setCursor(0, 15);
-
-  display.println(countryInfo[country].name);
-
-  display.setCursor(0, 30);
-
-  display.println(countryInfo[country].story);
-
-  display.display();
-
-  playSimulatedAudio(country);
-}
-
-// =====================================================
-// MODE BUTTON
-// =====================================================
 
 void checkModeButton()
 {
-  if (
-      digitalRead(MODE_BUTTON) == LOW)
-  {
     unsigned long now = millis();
+    bool isPressed = (digitalRead(MODE_BUTTON) == LOW);
 
-    if (
-        now - lastModePress >
-        debounceDelay)
+    if (isPressed && !modeButtonWasPressed)
     {
-      lastModePress = now;
-
-      changeMode();
+        if (now - lastModePressTime > DEBOUNCE_DELAY)
+        {
+            lastModePressTime = now;
+            changeMode();
+        }
     }
-  }
+    modeButtonWasPressed = isPressed;
 }
-
-// =====================================================
-// CHANGE MODE
-// =====================================================
 
 void changeMode()
 {
-  if (currentMode == FACTS)
-  {
-    currentMode = STORY;
-  }
-  else if (currentMode == STORY)
-  {
-    currentMode = QUIZ;
-  }
-  else
-  {
-    currentMode = FACTS;
+    if (currentMode == FACTS)
+    {
+        currentMode = STORY;
+    }
+    else if (currentMode == STORY)
+    {
+        currentMode = QUIZ;
+    }
+    else
+    {
+        currentMode = FACTS;
+    }
 
-    quizScore = 0;
-    quizQuestion = 0;
-  }
+    Serial.println();
+    Serial.println("========================================");
+    Serial.print("MODE SWITCHED TO: ");
+    if (currentMode == FACTS) Serial.println("FACTS");
+    else if (currentMode == STORY) Serial.println("STORY");
+    else if (currentMode == QUIZ) Serial.println("QUIZ");
+    Serial.println("========================================");
 
-  Serial.println();
-  Serial.println("==============================");
-
-  Serial.print("MODE CHANGED TO: ");
-
-  if (currentMode == FACTS)
-  {
-    Serial.println("FACTS");
-    showModeScreen("FACTS");
-  }
-  else if (currentMode == STORY)
-  {
-    Serial.println("STORY");
-    showModeScreen("STORY");
-  }
-  else
-  {
-    Serial.println("QUIZ");
-    showModeScreen("QUIZ");
-  }
-
-  Serial.println("==============================");
-
-  tone(
-      BUZZER,
-      1500,
-      150);
+    if (currentMode == QUIZ)
+    {
+        shuffleQuiz();
+        quizIndex = 0;
+        quizScore = 0;
+        showModeIntro(QUIZ);
+        delay(1200);
+        displayQuizQuestion();
+    }
+    else
+    {
+        showModeIntro(currentMode);
+    }
 }
-
-// =====================================================
-// MODE SCREEN
-// =====================================================
-
-void showModeScreen(const char *mode)
-{
-  display.clearDisplay();
-
-  display.setTextColor(SSD1306_WHITE);
-
-  display.setTextSize(1);
-
-  display.setCursor(0, 0);
-
-  display.println("MODE CHANGED");
-
-  display.setTextSize(2);
-
-  display.setCursor(0, 25);
-
-  display.println(mode);
-
-  display.display();
-}
-
-// =====================================================
-// QUIZ
-// =====================================================
-
-void handleQuiz(int selectedCountry)
-{
-  display.clearDisplay();
-
-  display.setTextColor(SSD1306_WHITE);
-
-  display.setTextSize(1);
-
-  display.setCursor(0, 0);
-
-  display.println("QUIZ");
-
-  display.setCursor(0, 15);
-
-  display.print("Q");
-  display.print(quizQuestion + 1);
-  display.print(": ");
-
-  display.println(countryInfo[selectedCountry].question);
-
-  display.setCursor(0, 45);
-
-  display.print("Score: ");
-  display.print(quizScore);
-
-  display.display();
-
-  Serial.print("Question: ");
-  Serial.println(countryInfo[selectedCountry].question);
-
-  Serial.print("Answer: ");
-  Serial.println(countryInfo[selectedCountry].answer);
-
-  Serial.print("Selected: ");
-  Serial.println(
-      countryInfo[selectedCountry].name);
-
-  quizQuestion++;
-
-  if (quizQuestion >= 12)
-  {
-    quizQuestion = 0;
-
-    display.clearDisplay();
-
-    display.setTextColor(SSD1306_WHITE);
-
-    display.setTextSize(1);
-
-    display.setCursor(0, 10);
-
-    display.println("QUIZ COMPLETE");
-
-    display.setTextSize(2);
-
-    display.setCursor(20, 30);
-
-    display.print("Score:");
-
-    display.print(quizScore);
-
-    display.display();
-
-    Serial.println("Quiz completed.");
-
-    delay(1500);
-  }
-}
-
-// =====================================================
-// SIMULATED AUDIO
-// =====================================================
-
-void playSimulatedAudio(int country)
-{
-  Serial.print("Playing audio for: ");
-
-  Serial.println(countryInfo[country].name);
-
-  Serial.println(
-      "(DFPlayer simulated by buzzer)");
-
-  tone(
-      BUZZER,
-      1000,
-      250);
-}
-
-// =====================================================
-// TURN OFF ALL LEDS
-// =====================================================
 
 void turnOffAllLEDs()
 {
-  for (int i = 0; i < 6; i++)
-  {
-    digitalWrite(
-        countryLEDs[i],
-        LOW);
-  }
+    for (int i = 0; i < NUM_LEDS; i++)
+    {
+        digitalWrite(countryLEDs[i], LOW);
+    }
+}
+
+void highlightLED(int country)
+{
+    turnOffAllLEDs();
+    if (country < NUM_LEDS)
+    {
+        digitalWrite(countryLEDs[country], HIGH);
+    }
 }

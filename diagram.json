@@ -106,35 +106,35 @@
 					"id": "pullup16",
 					"top": 480,
 					"left": 250,
-					"attrs": { "resistance": "10k" }
+					"attrs": { "value": "10000" }
 				},
 				{
 					"type": "wokwi-resistor",
 					"id": "pullup17",
 					"top": 480,
 					"left": 350,
-					"attrs": { "resistance": "10k" }
+					"attrs": { "value": "10000" }
 				},
 				{
 					"type": "wokwi-resistor",
 					"id": "pullup34",
 					"top": 480,
 					"left": 450,
-					"attrs": { "resistance": "10k" }
+					"attrs": { "value": "10000" }
 				},
 				{
 					"type": "wokwi-resistor",
 					"id": "pullup35",
 					"top": 480,
 					"left": 550,
-					"attrs": { "resistance": "10k" }
+					"attrs": { "value": "10000" }
 				},
 				{
 					"type": "wokwi-resistor",
 					"id": "pullup39",
 					"top": 480,
 					"left": 650,
-					"attrs": { "resistance": "10k" }
+					"attrs": { "value": "10000" }
 				},
 				{
 					"type": "wokwi-pushbutton",
@@ -184,13 +184,6 @@
 					"top": 400,
 					"left": 600,
 					"attrs": { "color": "purple" }
-				},
-				{
-					"type": "wokwi-buzzer",
-					"id": "buzzer",
-					"top": 450,
-					"left": 350,
-					"attrs": {}
 				}
 			],
 			"connections": [
@@ -210,11 +203,11 @@
 				[ "btnAustralia:2.r", "esp:GND.2", "black", [] ],
 				[ "btnFrance:1.l", "esp:D13", "purple", [] ],
 				[ "btnFrance:2.r", "esp:GND.2", "black", [] ],
-				[ "btnJapan:1.l", "esp:D16", "red", [] ],
+				[ "btnJapan:1.l", "esp:RX2", "red", [] ],
 				[ "btnJapan:2.r", "esp:GND.2", "black", [] ],
-				[ "btnCanada:1.l", "esp:D17", "white", [] ],
+				[ "btnCanada:1.l", "esp:TX2", "white", [] ],
 				[ "btnCanada:2.r", "esp:GND.2", "black", [] ],
-				[ "btnMexico:1.l", "esp:D39", "green", [] ],
+				[ "btnMexico:1.l", "esp:VN", "green", [] ],
 				[ "btnMexico:2.r", "esp:GND.2", "black", [] ],
 				[ "btnItaly:1.l", "esp:D12", "green", [] ],
 				[ "btnItaly:2.r", "esp:GND.2", "black", [] ],
@@ -225,13 +218,13 @@
 				[ "pullup34:1", "esp:3V3", "red", [] ],
 				[ "pullup34:2", "esp:D34", "red", [] ],
 				[ "pullup16:1", "esp:3V3", "red", [] ],
-				[ "pullup16:2", "esp:D16", "red", [] ],
+				[ "pullup16:2", "esp:RX2", "red", [] ],
 				[ "pullup17:1", "esp:3V3", "red", [] ],
-				[ "pullup17:2", "esp:D17", "red", [] ],
+				[ "pullup17:2", "esp:TX2", "red", [] ],
 				[ "pullup35:1", "esp:3V3", "red", [] ],
 				[ "pullup35:2", "esp:D35", "red", [] ],
 				[ "pullup39:1", "esp:3V3", "red", [] ],
-				[ "pullup39:2", "esp:D39", "red", [] ],
+				[ "pullup39:2", "esp:VN", "red", [] ],
 				[ "modeButton:1.l", "esp:D27", "orange", [] ],
 				[ "modeButton:2.r", "esp:GND.2", "black", [] ],
 				[ "ledIndia:A", "esp:D4", "green", [] ],
@@ -246,8 +239,6 @@
 				[ "ledAustralia:C", "esp:GND.3", "black", [] ],
 				[ "ledFrance:A", "esp:D15", "purple", [] ],
 				[ "ledFrance:C", "esp:GND.3", "black", [] ],
-				[ "buzzer:1", "esp:D2", "orange", [] ],
-				[ "buzzer:2", "esp:GND.4", "black", [] ],
 				[ "esp:TX0", "$serialMonitor:RX", "", [] ],
 				[ "esp:RX0", "$serialMonitor:TX", "", [] ]
 			],
